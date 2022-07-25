@@ -3,7 +3,7 @@ services:
   database:
     image: postgres:14.1
     command: postgres -c shared_preload_libraries=pg_stat_statements -c pg_stat_statements.track=all -c max_connections=200
-    container_name: go_api_db
+    container_name: db
     restart: always
     volumes:
       - ./docker/db/init.sh:/docker-entrypoint-initdb.d/init.sh
@@ -11,7 +11,7 @@ services:
     ports:
       - 5532:5432
     networks:
-      - go_internal_network
+      - project_internal_net
     environment:
       - POSTGRES_USER=${POSTGRES_USER}
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
@@ -21,14 +21,14 @@ services:
 
   redis:
     image: redis:5.0.9-alpine
-    container_name: go_api_redis
+    container_name: redis
     volumes:
       - ./docker/redis/store:/data
     ports:
       - 6479:6379
     networks:
-      - go_internal_network
+      - project_internal_net
 
 networks:
-  go_internal_network:
+  project_internal_net:
     external: true
